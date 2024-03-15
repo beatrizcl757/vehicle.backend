@@ -1,7 +1,12 @@
 package com.beatriz.crud.backend.dtos;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,5 +26,8 @@ public class VehicleDto {
 
     @NotNull
     private String color;
+
+    @NotNull
     private int year;
+
 }

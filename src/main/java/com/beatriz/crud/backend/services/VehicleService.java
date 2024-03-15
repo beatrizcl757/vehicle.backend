@@ -20,36 +20,16 @@ public class VehicleService {
     private final VehicleRepository vehicleRepository;
     private final VehicleMapper vehicleMapper;
 
-
     public List<VehicleDto> allVehicles() {
-        List<Vehicle> all = vehicleRepository.findAll();
-        return vehicleMapper.toVehicleDtos(all);
-
-    }
-
-    public VehicleDto getVehicle(Long id) {
-
-        Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new AppException("Veículo não encontrado", HttpStatus.NOT_FOUND));
-        return vehicleMapper.toVehicleDto(vehicle);
-
+        return vehicleMapper.toVehicleDtos(vehicleRepository.findAll());
     }
 
     public VehicleDto createVehicle(VehicleDto vehicleDto) {
         Vehicle vehicle = vehicleMapper.toVehicle(vehicleDto);
 
-        Vehicle createdVehicle = vehicleRepository.save(vehicle);
+        Vehicle savedVehicle = vehicleRepository.save(vehicle);
 
-        return vehicleMapper.toVehicleDto(createdVehicle);
-    }
-
-    public VehicleDto deleteVehicle(Long id) {
-        Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new AppException("Veículo não encontrado", HttpStatus.NOT_FOUND));
-        VehicleDto vehicleDto = vehicleMapper.toVehicleDto(vehicle);
-
-        vehicleRepository.deleteById(id);
-        return vehicleDto;
+        return vehicleMapper.toVehicleDto(savedVehicle);
     }
 
     public VehicleDto updateVehicle(Long id, VehicleDto vehicleDto) {
@@ -61,5 +41,43 @@ public class VehicleService {
         Vehicle savedVehicle = vehicleRepository.save(vehicle);
 
         return vehicleMapper.toVehicleDto(savedVehicle);
+    }
+
+    public VehicleDto patchVehicle(Long id, VehicleDto vehicleDto) {
+        Vehicle vehicle = vehicleRepository.findById(id)
+                .orElseThrow(() -> new AppException("Veículo não encontrado", HttpStatus.NOT_FOUND));
+
+        if (vehicleDto.getBrand() != null) {
+            vehicle.setBrand(vehicleDto.getBrand());
+        }
+        if (vehicleDto.getModel() != null) {
+            vehicle.setModel(vehicleDto.getModel());
+        }
+        if (vehicleDto.getYear() != 0) {
+            vehicle.setYear(vehicleDto.getYear());
+        }
+        if (vehicleDto.getColor() != null) {
+            vehicle.setColor(vehicleDto.getColor());
+        }
+
+        Vehicle savedVehicle = vehicleRepository.save(vehicle);
+
+        return vehicleMapper.toVehicleDto(savedVehicle);
+    }
+
+    public VehicleDto deleteVehicle(Long id) {
+        Vehicle vehicle = vehicleRepository.findById(id)
+                .orElseThrow(() -> new AppException("Veículo não encontrado", HttpStatus.NOT_FOUND));
+        VehicleDto vehicleDto = vehicleMapper.toVehicleDto(vehicle);
+
+        vehicleRepository.deleteById(id);
+
+        return vehicleDto;
+    }
+
+    public VehicleDto getVehicle(Long id) {
+        Vehicle vehicle = vehicleRepository.findById(id)
+                .orElseThrow(() -> new AppException("Veículo não encontrado", HttpStatus.NOT_FOUND));
+        return vehicleMapper.toVehicleDto(vehicle);
     }
 }
